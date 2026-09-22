@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en" manifest="cache.appcache">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#05070b" />
+  <title>LOADING PRO</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      overflow: hidden;
+      background: #05070b url("img/BG.jpg") center center / cover no-repeat fixed;
+      color: #eef5ff;
+      font: 15px/1.45 "Segoe UI", Arial, sans-serif;
+    }
+
+    body:before {
+      content: "";
+      position: fixed;
+      z-index: 0;
+      left: 0; top: 0; right: 0; bottom: 0;
+      background: linear-gradient(90deg, rgba(2,5,10,.28) 0%, rgba(2,5,10,.38) 48%, rgba(2,5,10,.16) 100%);
+      pointer-events: none;
+    }
+
+    #topbar {
+      position: fixed;
+      z-index: 5;
+      left: 28px;
+      right: 28px;
+      top: 22px;
+      height: 58px;
+      display: -webkit-box;
+      display: -webkit-flex;
+      display: flex;
+      -webkit-box-align: center;
+      -webkit-align-items: center;
+      align-items: center;
+      -webkit-box-pack: justify;
+      -webkit-justify-content: space-between;
+      justify-content: space-between;
+      pointer-events: none;
+    }
+
+    #brand {
+      display: -webkit-box;
+      display: -webkit-flex;
+      display: flex;
+      -webkit-box-align: center;
+      -webkit-align-items: center;
+      align-items: center;
+      min-width: 0;
+    }
+
+    #brand img {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      margin-right: 12px;
+      box-shadow: 0 0 0 1px rgba(55,174,255,.42), 0 0 25px rgba(0,139,255,.24);
+    }
+
+    .brand-copy { min-width: 0; }
+    .brand-name {
+      display: block;
+      font-size: 20px;
+      line-height: 1.05;
+      font-weight: 800;
+      letter-spacing: .12em;
+      color: #ffffff;
+      text-shadow: 0 0 18px rgba(38,169,255,.34);
+      white-space: nowrap;
+    }
+    .brand-sub {
+      display: block;
+      margin-top: 5px;
+      font-size: 10px;
+      letter-spacing: .30em;
+      color: #8ea8c8;
+      white-space: nowrap;
+    }
+
+    .version {
+      padding: 7px 12px;
+      border: 1px solid rgba(51,166,255,.30);
+      border-radius: 999px;
+      background: rgba(4,9,15,.72);
+      color: #9fc5ec;
+      font-size: 10px;
+      letter-spacing: .17em;
+    }
+
+    #stage {
+      position: fixed;
+      z-index: 2;
+      left: 5.8%;
+      bottom: 8.5%;
+      width: 590px;
+      max-width: 47vw;
+    }
+
+    #panel {
+      position: relative;
+      overflow: hidden;
+      padding: 25px 27px 22px;
+      border: 1px solid rgba(48,168,255,.27);
+      border-radius: 20px;
+      background: rgba(3,8,14,.88);
+      box-shadow: 0 22px 70px rgba(0,0,0,.52), 0 0 42px rgba(0,119,255,.08);
+    }
+
+    #panel:before {
+      content: "";
+      position: absolute;
+      left: 0; right: 0; top: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #078ef0 0%, #00c7ff 42%, #f4ca19 78%, #ffd92f 100%);
+    }
+
+    .eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .30em;
+      color: #2dbbff;
+      margin-bottom: 9px;
+    }
+
+    .run-title {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.12;
+      font-weight: 800;
+      letter-spacing: .015em;
+      color: #ffffff;
+    }
+
+    .run-sub {
+      margin: 8px 0 0;
+      color: #9aaec5;
+      font-size: 13px;
+    }
+
+    .state-row {
+      display: -webkit-box;
+      display: -webkit-flex;
+      display: flex;
+      -webkit-box-align: center;
+      -webkit-align-items: center;
+      align-items: center;
+      margin-top: 21px;
+      min-height: 42px;
+    }
+
+    #spin {
+      width: 32px;
+      height: 32px;
+      margin-right: 13px;
+      border: 3px solid rgba(255,255,255,.10);
+      border-top-color: #21b6ff;
+      border-right-color: #f4cb22;
+      border-radius: 50%;
+      -webkit-animation: spin .78s linear infinite;
+      animation: spin .78s linear infinite;
+      -webkit-flex: 0 0 auto;
+      flex: 0 0 auto;
+      box-shadow: 0 0 18px rgba(0,150,255,.16);
+    }
+    @-webkit-keyframes spin { to { -webkit-transform: rotate(360deg); transform: rotate(360deg); } }
+    @keyframes spin { to { -webkit-transform: rotate(360deg); transform: rotate(360deg); } }
+
+    .running-copy, .done-copy, .fail-copy { display: none; }
+    .running-copy { display: block; }
+    .state-main { color: #eaf4ff; font-size: 14px; font-weight: 700; letter-spacing: .03em; }
+    .state-sub { color: #71859d; font-size: 11px; margin-top: 2px; }
+
+    .cache-box {
+      margin-top: 20px;
+      padding: 14px 15px 13px;
+      border: 1px solid rgba(255,255,255,.075);
+      border-radius: 13px;
+      background: rgba(255,255,255,.025);
+    }
+    .cache-head {
+      display: -webkit-box;
+      display: -webkit-flex;
+      display: flex;
+      -webkit-box-pack: justify;
+      -webkit-justify-content: space-between;
+      justify-content: space-between;
+      -webkit-box-align: center;
+      -webkit-align-items: center;
+      align-items: center;
+      margin-bottom: 9px;
+    }
+    .cache-label { color: #aabbd0; font-size: 10px; font-weight: 700; letter-spacing: .20em; }
+    #cachePct { color: #f5d22d; font-size: 11px; font-weight: 800; }
+    .track {
+      height: 7px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #111a25;
+      box-shadow: inset 0 1px 4px rgba(0,0,0,.55);
+    }
+    #cacheFill {
+      width: 6%;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #078ef0 0%, #11c8ff 48%, #f5ca1a 100%);
+      box-shadow: 0 0 14px rgba(20,174,255,.32);
+      -webkit-transition: width .22s ease;
+      transition: width .22s ease;
+    }
+    #cacheText { margin-top: 8px; color: #71859d; font-size: 10px; letter-spacing: .05em; }
+
+    .meta-row {
+      display: -webkit-box;
+      display: -webkit-flex;
+      display: flex;
+      margin-top: 16px;
+      border-top: 1px solid rgba(255,255,255,.065);
+      padding-top: 14px;
+    }
+    .meta-item { width: 33.333%; }
+    .meta-k { color: #61768f; font-size: 9px; letter-spacing: .18em; }
+    .meta-v { color: #cedcf0; font-size: 11px; margin-top: 4px; }
+    .accent-blue { color: #2bbcff; }
+    .accent-yellow { color: #f3cf2c; }
+
+    #msg {
+      display: none;
+      margin-top: 15px;
+      padding: 11px 13px;
+      border: 1px solid rgba(255,127,112,.30);
+      border-radius: 10px;
+      background: rgba(105,21,19,.16);
+      color: #ffc2bb;
+      font-size: 12px;
+    }
+
+    #wrap { padding: 0; }
+    #state, #out { display: none; }
+
+    body.done #spin,
+    body.fail #spin { display: none; }
+
+    body.done .running-copy,
+    body.fail .running-copy { display: none; }
+    body.done .done-copy { display: block; }
+    body.fail .fail-copy { display: block; }
+    body.done .done-copy .state-main { color: #91efad; }
+    body.fail .fail-copy .state-main { color: #ffaaa1; }
+    body.fail #msg { display: block; }
+
+    body.log { overflow: auto; background-color: #05070b; }
+    body.log #topbar { position: relative; left: auto; right: auto; top: auto; margin: 18px 22px 0; }
+    body.log #stage { display: none; }
+    body.log #wrap {
+      position: relative;
+      z-index: 4;
+      padding: 20px 22px 24px;
+    }
+    body.log #state {
+      display: block;
+      max-width: 1120px;
+      margin: 0 auto 10px;
+      padding: 14px 16px;
+      border: 1px solid rgba(47,172,255,.22);
+      border-radius: 12px;
+      background: rgba(6,11,18,.90);
+      color: #eaf5ff;
+      font-size: 18px;
+      font-weight: 800;
+    }
+    body.log #out {
+      display: block;
+      max-width: 1120px;
+      height: -webkit-calc(100vh - 145px);
+      height: calc(100vh - 145px);
+      margin: 0 auto;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      padding: 15px 16px;
+      box-sizing: border-box;
+      border: 1px solid rgba(255,255,255,.075);
+      border-radius: 12px;
+      background: rgba(4,8,13,.94);
+      color: #9eb1c6;
+      font: 12px/1.52 Consolas, monospace;
+    }
+    .ok, .safe { color: #86e7a4; }
+    .bad, .danger { color: #ff9e96; }
+    .warn { color: #f1d478; }
+    code { color: #9fc8ef; }
+
+    @media (max-width: 900px) {
+      #topbar { left: 18px; right: 18px; top: 15px; }
+      .brand-sub, .version { display: none; }
+      #stage {
+        left: 18px;
+        right: 18px;
+        bottom: 24px;
+        width: auto;
+        max-width: none;
+      }
+      #panel { padding: 21px 20px 18px; }
+      .run-title { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="topbar">
+    <div id="brand">
+      <img src="logo.png" alt="LOADING PRO" />
+      <div class="brand-copy">
+        <span class="brand-name">LOADING PRO</span>
+        <span class="brand-sub">ENTERTAINMENT DEVICES</span>
+      </div>
+    </div>
+    <div class="version">HOST EDITION · 9.00</div>
+  </div>
+
+  <main id="stage">
+    <section id="panel">
+      <div class="eyebrow">LOADING PRO HOST SYSTEM</div>
+      <h1 class="run-title">Console service is starting</h1>
+      <p class="run-sub">Keep this page open while the host prepares the required files.</p>
+
+      <div class="state-row">
+        <div id="spin"></div>
+        <div class="running-copy">
+          <div class="state-main">Initializing host environment</div>
+          <div class="state-sub">Please wait — do not close the browser.</div>
+        </div>
+        <div class="done-copy">
+          <div class="state-main">Host completed successfully</div>
+          <div class="state-sub">The requested process has finished.</div>
+        </div>
+        <div class="fail-copy">
+          <div class="state-main">Host process stopped</div>
+          <div class="state-sub">Restart the console, then open the host again.</div>
+        </div>
+      </div>
+
+      <div class="cache-box">
+        <div class="cache-head">
+          <span class="cache-label">OFFLINE CACHE</span>
+          <span id="cachePct">CHECKING</span>
+        </div>
+        <div class="track"><div id="cacheFill"></div></div>
+        <div id="cacheText">Checking locally stored host files...</div>
+      </div>
+
+      <div class="meta-row">
+        <div class="meta-item"><div class="meta-k">BRAND</div><div class="meta-v">Loading Pro</div></div>
+        <div class="meta-item"><div class="meta-k">HOST</div><div class="meta-v accent-blue">Ready Mode</div></div>
+        <div class="meta-item"><div class="meta-k">CACHE</div><div class="meta-v accent-yellow">Offline Enabled</div></div>
+      </div>
+
+      <div id="msg">Restart your console and try again.</div>
+    </section>
+  </main>
+
+  <div id="wrap">
+    <div id="state"></div>
+    <div id="out"></div>
+  </div>
+
+  <script>
+    (function () {
+      var fill = document.getElementById("cacheFill");
+      var pct = document.getElementById("cachePct");
+      var text = document.getElementById("cacheText");
+      var last = 6;
+
+      function setCache(value, label, detail) {
+        if (value < 6) value = 6;
+        if (value > 100) value = 100;
+        last = value;
+        if (fill) fill.style.width = value + "%";
+        if (pct) pct.textContent = label || (value + "%");
+        if (text && detail) text.textContent = detail;
+      }
+
+      if (!window.applicationCache) {
+        setCache(100, "LOCAL", "Host files are being used directly from the current source.");
+        return;
+      }
+
+      var appCache = window.applicationCache;
+      appCache.addEventListener("checking", function () {
+        setCache(8, "CHECKING", "Checking the offline host cache...");
+      }, false);
+      appCache.addEventListener("downloading", function () {
+        setCache(14, "STARTING", "Downloading host files for offline use...");
+      }, false);
+      appCache.addEventListener("progress", function (e) {
+        var value = last + 5;
+        if (e && e.lengthComputable && e.total) value = Math.round((e.loaded / e.total) * 100);
+        else if (e && e.total) value = Math.round((e.loaded / e.total) * 100);
+        setCache(value, value + "%", "Saving required host files..." + (e && e.total ? "  " + e.loaded + "/" + e.total : ""));
+      }, false);
+      appCache.addEventListener("cached", function () {
+        setCache(100, "100%", "Offline cache installed successfully.");
+      }, false);
+      appCache.addEventListener("updateready", function () {
+        setCache(100, "UPDATED", "A newer offline cache is ready.");
+      }, false);
+      appCache.addEventListener("noupdate", function () {
+        setCache(100, "READY", "Offline cache is already up to date.");
+      }, false);
+      appCache.addEventListener("error", function () {
+        setCache(last, "ONLINE", "Cache update was not completed; the current host can still continue.");
+      }, false);
+
+      try {
+        if (appCache.status === 1) setCache(100, "READY", "Offline cache is already available.");
+      } catch (e) {}
+    })();
+  </script>
+
+  <script type="module">
+    import "./jb.js?v=10";
+  </script>
+</body>
+</html>
